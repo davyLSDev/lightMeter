@@ -29,10 +29,7 @@ Adafruit_PCD8544 display = Adafruit_PCD8544 (13, 11, 5, 7, 6);
 
 // define some useful constants
 #define delayTime 100
-#define minLight 0
-#define maxLight 360
-#define minLightMapped 0
-#define maxLightMapped 100
+
 
 #define lcdContrast 50
 #define initialLcdBrightness 127
@@ -82,13 +79,19 @@ void loop() {
  *********************************************/
 int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float evCompensation){
 
-  int lightRange = map (analogRead (solarPanelInput), minLight, maxLight, \
-  minLightMapped, maxLightMapped);
-  return lightRange; 
+  #define minLight 0
+  #define maxLight 360
+  #define minLightMapped 0
+  #define maxLightMapped 100
+  int light = analogRead (solarPanelInput);
+  /* int light = map (analogRead (solarPanelInput), minLight, maxLight, \
+   * minLightMapped, maxLightMapped);
+   */
+  return light; 
 }
 
 /*********************************************
- * write Exposure Value (ev) to lcd panel 
+ * print message to lcd panel at coordinate 
  *********************************************/
 void lcdprint (position coordinate, String message) {
   display.setCursor (coordinate.x, coordinate.y);
