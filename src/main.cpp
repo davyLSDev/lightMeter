@@ -21,20 +21,19 @@ Adafruit_PCD8544 display = Adafruit_PCD8544 (13, 11, 5, 7, 6);
  * Arduino pin  A0 -> solar panel
  * Arduino pin  A1 -> pot 
  */
-#define upSwitch 8
-#define downSwitch 9
-#define lcdBackLight 10 
-#define solarPanelInput A0
-#define changeVariablesPot A1
+#define UP_SWITCH 8
+#define DOWN_SWITCH 9
+#define LCD_BACKLIGHT 10 
+#define SOLAR_CELL_INPUT A0
+#define VARIABLES_POT A1
 
 // define some useful constants
-#define delayTime 100
+#define DELAY_TIME 100
 
-
-#define lcdContrast 50
-#define initialLcdBrightness 127
-#define lcdTextSize 1
-#define lcdRotation 2
+#define LCD_CONTRAST 50
+#define LCD_DEFAULT_BRIGHTNESS 127
+#define LCD_TEXT_SIZE 1
+#define LCD_ROTATION 2
 
 struct position {
   int x;
@@ -46,16 +45,16 @@ int getLightReading (float, float, float, float);
 void lcdprint (position, String);
 
 void setup() {
-  pinMode (upSwitch, INPUT);
-  pinMode (downSwitch, INPUT);
-  pinMode (lcdBackLight, OUTPUT);
+  pinMode (UP_SWITCH, INPUT);
+  pinMode (DOWN_SWITCH, INPUT);
+  pinMode (LCD_BACKLIGHT, OUTPUT);
   Serial.begin(9600);
 
   display.begin(); // initialize display
-  analogWrite (lcdBackLight, initialLcdBrightness);
-  display.setContrast (lcdContrast);
-  display.setTextSize (lcdTextSize);
-  display.setRotation (lcdRotation);
+  analogWrite (LCD_CONTRAST, LCD_DEFAULT_BRIGHTNESS);
+  display.setContrast (LCD_CONTRAST);
+  display.setTextSize (LCD_TEXT_SIZE);
+  display.setRotation (LCD_ROTATION);
   display.clearDisplay ();
 }
 
@@ -70,7 +69,7 @@ void loop() {
   display.clearDisplay();
   ev = getLightReading (iso, fstop, shutter, evAdjust);
   lcdprint (lineOnePosition, "EV "+String(ev));
-  delay (delayTime);
+  delay (DELAY_TIME);
 
 }
 
@@ -79,13 +78,14 @@ void loop() {
  *********************************************/
 int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float evCompensation){
 
-  #define minLight 0
-  #define maxLight 360
-  #define minLightMapped 0
-  #define maxLightMapped 100
-  int light = analogRead (solarPanelInput);
-  /* int light = map (analogRead (solarPanelInput), minLight, maxLight, \
-   * minLightMapped, maxLightMapped);
+  #define MIN_LIGHT 0
+  #define MAX_LIGHT 360
+  #define MIN_EV 0
+  #define MAX_EV 100
+  int light = analogRead (SOLAR_CELL_INPUT);
+  /*
+  int light = map (analogRead (SOLAR_CELL_INPUT), MIN_LIGHT, MAX_LIGHT, \
+   * MIN_EV, MAX_EV);
    */
   return light; 
 }
