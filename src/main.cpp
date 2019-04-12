@@ -51,7 +51,7 @@ void setup() {
   Serial.begin(9600);
 
   display.begin(); // initialize display
-  analogWrite (LCD_CONTRAST, LCD_DEFAULT_BRIGHTNESS);
+  analogWrite (LCD_BACKLIGHT, LCD_DEFAULT_BRIGHTNESS);
   display.setContrast (LCD_CONTRAST);
   display.setTextSize (LCD_TEXT_SIZE);
   display.setRotation (LCD_ROTATION);
