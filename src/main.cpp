@@ -29,11 +29,12 @@ Adafruit_PCD8544 display = Adafruit_PCD8544 (13, 11, 5, 7, 6);
 
 // define some useful constants
 #define DELAY_TIME 100
-
 #define LCD_CONTRAST 50
 #define LCD_DEFAULT_BRIGHTNESS 127
 #define LCD_TEXT_SIZE 1
 #define LCD_ROTATION 2
+
+#define numberOfColumns 8;
 
 struct position {
   int x;
@@ -43,8 +44,11 @@ struct position {
 // function prototypes
 int getLightReading (float, float, float, float);
 void lcdprint (position, String);
+void clearLcdChars (position, int);
+float evCalibrated (float);
 
 void setup() {
+//  SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with this library
   pinMode (UP_SWITCH, INPUT);
   pinMode (DOWN_SWITCH, INPUT);
   pinMode (LCD_BACKLIGHT, OUTPUT);
@@ -63,12 +67,18 @@ void loop() {
   float fstop = 16;
   float shutter = 1/100;
   float evAdjust = 0.0;
-  int ev;
+  int lightReading;
+  float ev;
   position lineOnePosition = { 0, 0 };
+  position lineTwoPosition = { 0, 10 };
+  position lineOneEraseFromPosition = { 18, 0 };
 
-  display.clearDisplay();
-  ev = getLightReading (iso, fstop, shutter, evAdjust);
-  lcdprint (lineOnePosition, "EV "+String(ev));
+  display.clearDisplay (); // work on how to avoid this (paint horiz white lines?)
+  lightReading = getLightReading (iso, fstop, shutter, evAdjust);
+//  clearLcdChars (lineOneEraseFromPosition, 1);
+  lcdprint (lineOnePosition, "LR "+String(lightReading) );
+  ev = evCalibrated ( float (lightReading) );
+  lcdprint (lineTwoPosition, "EV "+String(ev) );
   delay (DELAY_TIME);
 
 }
@@ -87,7 +97,20 @@ int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float 
   int light = map (analogRead (SOLAR_CELL_INPUT), MIN_LIGHT, MAX_LIGHT, \
    * MIN_EV, MAX_EV);
    */
-  return light; 
+
+  return evCalibrated ( light ); 
+}
+
+void clearLcdChars (position clearFrom, int numberOfChars) {
+  #define numberOfColumns 8;
+ 
+  for ( int charNumber = 0; charNumber = numberOfChars; charNumber++ ) {
+    //for ( int columnNumber = 0; columnNumber > numberOfColumns; columnNumber++ ) {
+      display.drawPixel ( (clearFrom.x + 6*charNumber) , clearFrom.y, BLACK);
+      display.display ();
+    //}
+  }
+  
 }
 
 /*********************************************
@@ -97,4 +120,34 @@ void lcdprint (position coordinate, String message) {
   display.setCursor (coordinate.x, coordinate.y);
   display.println (message);
   display.display ();
+}
+
+/*********************************************
+ * Calibrated light reading based on 10k
+ * resistor across the solar cell, using
+ * a standard photographic light meter for
+ * the EV reading at 100 ASA.
+ * 
+ * EV LR (Light reading)
+ * 4  45
+ * 5  58
+ * 6  76
+ * 7  113
+ * 8  176
+ * 9  192
+ * 10 205
+ * 11 293
+ * 12 330
+ * 13 425
+ * 14 457
+ * 15 470
+ * 
+ * Entering these numbers into 
+ * https://www.easycalculation.com/analytical/least-squares-regression-line-equation.php
+ * generated the formula to calculate EV based on 
+ * the light reading.
+ */
+float evCalibrated (float lightReading) {
+  float result;
+  return result = 0.023*lightReading + 4.107;
 }
