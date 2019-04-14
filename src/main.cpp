@@ -25,7 +25,7 @@ Adafruit_PCD8544 display = Adafruit_PCD8544 (13, 11, 5, 7, 6);
 #define DOWN_SWITCH 9
 #define LCD_BACKLIGHT 10 
 #define SOLAR_CELL_INPUT A0
-#define VARIABLES_POT A1
+#define VARIABLE_RESISTOR A1
 
 // define some useful constants
 #define DELAY_TIME 100
@@ -44,7 +44,9 @@ struct position {
 // function prototypes
 int getLightReading (float, float, float, float);
 void lcdprint (position, String);
+void testScreenDisplay (int, float, float, int);
 float evCalibrated (float);
+float getVariableResistorValue ();
 
 void setup() {
 //  SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with this library
@@ -66,17 +68,15 @@ void loop() {
   float fstop = 16;
   float shutter = 1/100;
   float evAdjust = 0.0;
-  int lightReading;
   float ev;
-  position lineOnePosition = { 0, 0 };
-  position lineTwoPosition = { 0, 10 };
-  position lineOneEraseFromPosition = { 18, 0 };
-
-  display.clearDisplay (); // how can this be avoided?
+  float variableResistorValue;
+  int lightReading;
+  int variableNumber = 0;
+  
   lightReading = getLightReading (iso, fstop, shutter, evAdjust);
-  lcdprint (lineOnePosition, "LR "+String (lightReading) );
-  ev = evCalibrated ( float (lightReading) );
-  lcdprint (lineTwoPosition, "EV "+String(ev) );
+  ev = evCalibrated ( float (lightReading) ); // later this will be integrated into getLightReading
+  variableResistorValue = getVariableResistorValue ();
+  testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber);
   delay (DELAY_TIME);
 
 }
@@ -132,4 +132,23 @@ void lcdprint (position coordinate, String message) {
 float evCalibrated (float lightReading) {
   float result;
   return result = 0.023*lightReading + 4.107;
+}
+
+float getVariableResistorValue () {
+  float variable;
+  variable = analogRead (VARIABLE_RESISTOR);
+  return variable;
+}
+
+void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, int switchesState){
+  position lineOnePosition = { 0, 0 };
+  position lineTwoPosition = { 0, 10 };
+  position lineThreePosition = { 0, 20 };
+  position lineFourPosition = { 0, 30 };
+
+  display.clearDisplay (); // how can this be avoided?
+  lcdprint (lineOnePosition, "LR "+String (howMuchLight) );
+  lcdprint (lineTwoPosition, "EV "+String(exposureValue) );
+  lcdprint (lineThreePosition, "Pot "+String (potValue) );
+  lcdprint (lineFourPosition, "SW state "+String (switchesState) );
 }
