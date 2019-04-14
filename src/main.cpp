@@ -28,7 +28,7 @@ Adafruit_PCD8544 display = Adafruit_PCD8544 (13, 11, 5, 7, 6);
 #define VARIABLE_RESISTOR A1
 
 // define some useful constants
-#define DELAY_TIME 100
+#define DELAY_TIME 200
 #define LCD_CONTRAST 50
 #define LCD_DEFAULT_BRIGHTNESS 127
 #define LCD_TEXT_SIZE 1
@@ -41,8 +41,17 @@ struct position {
   int y;
 };
 
+/* some globals (are these needed?)
+* make them 'static' in loop()
+int lastUpSwitchState = 1;
+int lastDownSwitchState = 1;
+int lastVariableChoice = 0;
+unsigned long debounceTimeValue = 0;
+*/
+
 // function prototypes
 int getLightReading (float, float, float, float);
+int getVariableChoice (unsigned long, int);
 void lcdprint (position, String);
 void testScreenDisplay (int, float, float, int);
 float evCalibrated (float);
@@ -72,11 +81,19 @@ void loop() {
   float variableResistorValue;
   int lightReading;
   int variableNumber = 0;
+
+  static int lastVariableChoice = 0;
+  static unsigned long debounceTimeValue = 0;
+  // static int test =0;
   
   lightReading = getLightReading (iso, fstop, shutter, evAdjust);
   ev = evCalibrated ( float (lightReading) ); // later this will be integrated into getLightReading
   variableResistorValue = getVariableResistorValue ();
+  variableNumber = getVariableChoice (debounceTimeValue, lastVariableChoice);
+  lastVariableChoice = variableNumber;
   testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber);
+
+  // to prove a point with "static" Serial.println ("number is "+String(test++));
   delay (DELAY_TIME);
 
 }
@@ -134,12 +151,69 @@ float evCalibrated (float lightReading) {
   return result = 0.023*lightReading + 4.107;
 }
 
+/*********************
+ * get the variable resistor value
+ *********************/
 float getVariableResistorValue () {
   float variable;
   variable = analogRead (VARIABLE_RESISTOR);
   return variable;
 }
 
+/*********************
+ * fetch the variable choice
+ *********************/
+int getVariableChoice (unsigned long lastTime, int lastChoice){
+/*  0 -> no changes (like the recal screen) 
+ * 1 -> brightness
+ * Does nothing I can notice 2 -> contrast
+ * 2 -> ISO
+ * 3 -> VU style meter
+ * 4 -> bargraph
+ * 
+ *      One of the meter screens:
+ * 5 -> shutter speed
+ * 6 -> aperature
+ * 
+ *      Recalibrate screen:
+ * 7 -> recalibrate control
+ */
+
+  unsigned long timeNow = millis();
+  const unsigned long debounceDelay = 50;
+
+  int upSwitchState = digitalRead(UP_SWITCH);
+  int downSwitchState = digitalRead(DOWN_SWITCH);
+  int numberOfChoices = 8-1; // counting starts at zero
+
+  static int lastUpSwitchState = 1;
+  static int lastDownSwitchState = 1;  
+
+  if ( (timeNow - lastTime ) >= debounceDelay){
+    lastTime = timeNow;
+    if ( upSwitchState != lastUpSwitchState ) {
+      lastUpSwitchState = upSwitchState;
+      if ( upSwitchState == 0 ) {
+        lastChoice++;
+      }
+    }
+    
+    if ( downSwitchState != lastDownSwitchState ) {
+      if ( downSwitchState == 0 ) {
+        lastChoice--;
+      }
+    }
+
+    if ( lastChoice > numberOfChoices ) lastChoice = 0; // wraparound
+    if ( lastChoice < 0 ) lastChoice = numberOfChoices;
+  }
+
+  return lastChoice;
+}
+
+/*********************************************
+ * test screen display with simple data 
+ *********************************************/
 void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, int switchesState){
   position lineOnePosition = { 0, 0 };
   position lineTwoPosition = { 0, 10 };
