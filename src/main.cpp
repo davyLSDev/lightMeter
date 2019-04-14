@@ -41,14 +41,6 @@ struct position {
   int y;
 };
 
-/* some globals (are these needed?)
-* make them 'static' in loop()
-int lastUpSwitchState = 1;
-int lastDownSwitchState = 1;
-int lastVariableChoice = 0;
-unsigned long debounceTimeValue = 0;
-*/
-
 // function prototypes
 int getLightReading (float, float, float, float);
 int getVariableChoice (unsigned long, int);
@@ -114,7 +106,7 @@ int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float 
 
 /*********************************************
  * print message to lcd panel at coordinate 
- ********************************************clearFrom.x, clearFrom.y+*/
+ *********************************************/
 void lcdprint (position coordinate, String message) {
   display.setCursor (coordinate.x, coordinate.y);
   display.println (message);
@@ -145,24 +137,24 @@ void lcdprint (position coordinate, String message) {
  * https://www.easycalculation.com/analytical/least-squares-regression-line-equation.php
  * generated the formula to calculate EV based on 
  * the light reading.
- */
+ *********************************************/
 float evCalibrated (float lightReading) {
   float result;
   return result = 0.023*lightReading + 4.107;
 }
 
-/*********************
+/*********************************************
  * get the variable resistor value
- *********************/
+ *********************************************/
 float getVariableResistorValue () {
   float variable;
   variable = analogRead (VARIABLE_RESISTOR);
   return variable;
 }
 
-/*********************
+/*********************************************
  * fetch the variable choice
- *********************/
+/*********************************************
 int getVariableChoice (unsigned long lastTime, int lastChoice){
 /*  0 -> no changes (like the recal screen) 
  * 1 -> brightness
