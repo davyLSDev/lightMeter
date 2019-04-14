@@ -44,7 +44,6 @@ struct position {
 // function prototypes
 int getLightReading (float, float, float, float);
 void lcdprint (position, String);
-void clearLcdChars (position, int);
 float evCalibrated (float);
 
 void setup() {
@@ -73,10 +72,9 @@ void loop() {
   position lineTwoPosition = { 0, 10 };
   position lineOneEraseFromPosition = { 18, 0 };
 
-  display.clearDisplay (); // work on how to avoid this (paint horiz white lines?)
+  display.clearDisplay (); // how can this be avoided?
   lightReading = getLightReading (iso, fstop, shutter, evAdjust);
-//  clearLcdChars (lineOneEraseFromPosition, 1);
-  lcdprint (lineOnePosition, "LR "+String(lightReading) );
+  lcdprint (lineOnePosition, "LR "+String (lightReading) );
   ev = evCalibrated ( float (lightReading) );
   lcdprint (lineTwoPosition, "EV "+String(ev) );
   delay (DELAY_TIME);
@@ -93,29 +91,13 @@ int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float 
   #define MIN_EV 0
   #define MAX_EV 100
   int light = analogRead (SOLAR_CELL_INPUT);
-  /*
-  int light = map (analogRead (SOLAR_CELL_INPUT), MIN_LIGHT, MAX_LIGHT, \
-   * MIN_EV, MAX_EV);
-   */
-
-  return evCalibrated ( light ); 
-}
-
-void clearLcdChars (position clearFrom, int numberOfChars) {
-  #define numberOfColumns 8;
- 
-  for ( int charNumber = 0; charNumber = numberOfChars; charNumber++ ) {
-    //for ( int columnNumber = 0; columnNumber > numberOfColumns; columnNumber++ ) {
-      display.drawPixel ( (clearFrom.x + 6*charNumber) , clearFrom.y, BLACK);
-      display.display ();
-    //}
-  }
-  
+  return light;
+  // later use this: return evCalibrated ( light ); 
 }
 
 /*********************************************
  * print message to lcd panel at coordinate 
- *********************************************/
+ ********************************************clearFrom.x, clearFrom.y+*/
 void lcdprint (position coordinate, String message) {
   display.setCursor (coordinate.x, coordinate.y);
   display.println (message);
@@ -141,7 +123,7 @@ void lcdprint (position coordinate, String message) {
  * 13 425
  * 14 457
  * 15 470
- * 
+ * clearLcdChars (lineOneEraseFromPosition, 1);
  * Entering these numbers into 
  * https://www.easycalculation.com/analytical/least-squares-regression-line-equation.php
  * generated the formula to calculate EV based on 
