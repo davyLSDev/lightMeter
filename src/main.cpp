@@ -154,7 +154,7 @@ float getVariableResistorValue () {
 
 /*********************************************
  * fetch the variable choice
-/*********************************************
+ ********************************************/
 int getVariableChoice (unsigned long lastTime, int lastChoice){
 /*  0 -> no changes (like the recal screen) 
  * 1 -> brightness
