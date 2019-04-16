@@ -47,7 +47,7 @@ struct position {
 int getLightReading (float, float, float, float);
 int getVariableChoice (unsigned long, int);
 void lcdprint (position, String);
-void testScreenDisplay (int, float, float, int);
+void testScreenDisplay (int, float, float, int, String, String, String);
 float evCalibrated (float);
 float getVariableResistorValue ();
 
@@ -80,6 +80,9 @@ void loop() {
   float variableResistorValue;
   int lightReading;
   int variableNumber = 0;
+  String isoValue = "I:3200";
+  String apertureValue = "f 1024";
+  String shutterValue = "1/1000";
 
   static int lastVariableChoice = 0;
   static unsigned long debounceTimeValue = 0;
@@ -90,7 +93,8 @@ void loop() {
   variableResistorValue = getVariableResistorValue ();
   variableNumber = getVariableChoice (debounceTimeValue, lastVariableChoice);
   lastVariableChoice = variableNumber;
-  testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber);
+  testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber, \
+    isoValue, apertureValue, shutterValue);
 
   // to prove a point with "static" Serial.println ("number is "+String(test++));
   delay (DELAY_TIME);
@@ -120,7 +124,7 @@ void lcdprint (position coordinate, String message) {
     setChar ( message.charAt (charNum++), coordinate.x+(charNum*6), coordinate.y, BLACK);
   }  
 
-/*  display.setCursor (coordinate.x, coordinate.y);
+/*  display.setCursor (coordinate.x, coordinate.y); 
   display.println (message);
   display.display ();
   */
@@ -133,7 +137,7 @@ void lcdprint (position coordinate, String message) {
  * 
  * EV LR (Light reading)
  * 4  45
- * 5  58
+ * 5  58Begin
  * 6  76
  * 7  113
  * 8  176
@@ -218,16 +222,24 @@ int getVariableChoice (unsigned long lastTime, int lastChoice){
 /*********************************************
  * test screen display with simple data 
  *********************************************/
-void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, int switchesState){
+void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, int switchesState, \
+  String iso, String aperture, String shutter) {
+
   position lineOnePosition = { 0, 0 };
   position lineTwoPosition = { 0, 10 };
   position lineThreePosition = { 0, 20 };
   position lineFourPosition = { 0, 30 };
+  position isoPosition = { 48, 0 };
+  position aperturePosition = { 0, 40 };
+  position shutterPosition = { 48, 40 };
 
 //  display.clearDisplay (); // how can this be avoided?
   lcdprint (lineOnePosition, "LR "+String (howMuchLight) );
   lcdprint (lineTwoPosition, "EV "+String(exposureValue) );
   lcdprint (lineThreePosition, "Pot "+String (potValue) );
   lcdprint (lineFourPosition, "SW state "+String (switchesState) );
+  lcdprint (isoPosition, iso);
+  lcdprint (aperturePosition, aperture);
+  lcdprint (shutterPosition, shutter);
   updateDisplay();
 }
