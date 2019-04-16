@@ -1,7 +1,9 @@
 #include <Arduino.h>
+#include <SPI.h>                  // LCD_REFACTORING
+#include "../lib/LCD_Functions.h" // LCD_REFACTORING
 // Note: installed these libraries with platformio library installer
-#include <Adafruit_GFX.h>
-#include <Adafruit_PCD8544.h>
+// LCD_REFACTORING #include <Adafruit_GFX.h>
+// LCD_REFACTORING #include <Adafruit_PCD8544.h>
 
 /* Software SPI (slower updates, more flexible pin options):
  * Arduino pin 13 - Serial clock out (SCLK)
@@ -11,7 +13,7 @@
  * Arduino pin 7 - LCD chip enable (SCE)
  * Harware SPI not working => Adafruit_PCD8544 display = Adafruit_PCD8544(5, 7 ,6);
  */
-Adafruit_PCD8544 display = Adafruit_PCD8544 (13, 11, 5, 7, 6);
+// LCD_REFACTORING Adafruit_PCD8544 display = Adafruit_PCD8544 (13, 11, 5, 7, 6);
 
 /* define hardware pins used
  *
@@ -50,18 +52,23 @@ float evCalibrated (float);
 float getVariableResistorValue ();
 
 void setup() {
-//  SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with this library
+  SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with the Adafruit_GFX et.al. library
   pinMode (UP_SWITCH, INPUT);
   pinMode (DOWN_SWITCH, INPUT);
   pinMode (LCD_BACKLIGHT, OUTPUT);
   Serial.begin(9600);
 
-  display.begin(); // initialize display
+// LCD_REFACTORING  display.begin(); // initialize display
+  lcdBegin (); // LCD_REFACTORING
   analogWrite (LCD_BACKLIGHT, LCD_DEFAULT_BRIGHTNESS);
-  display.setContrast (LCD_CONTRAST);
+/*  display.setContrast (LCD_CONTRAST);
   display.setTextSize (LCD_TEXT_SIZE);
   display.setRotation (LCD_ROTATION);
   display.clearDisplay ();
+  */
+  setContrast (LCD_CONTRAST);
+  clearDisplay (WHITE);
+  updateDisplay ();
 }
 
 void loop() {
@@ -108,11 +115,16 @@ int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float 
  * print message to lcd panel at coordinate 
  *********************************************/
 void lcdprint (position coordinate, String message) {
-  display.setCursor (coordinate.x, coordinate.y);
+  unsigned char charNum = 0;
+  while (message.charAt(charNum) != 0x00) {
+    setChar ( message.charAt (charNum++), coordinate.x+(charNum*6), coordinate.y, BLACK);
+  }  
+
+/*  display.setCursor (coordinate.x, coordinate.y);
   display.println (message);
   display.display ();
+  */
 }
-
 /*********************************************
  * Calibrated light reading based on 10k
  * resistor across the solar cell, using
@@ -212,9 +224,10 @@ void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, i
   position lineThreePosition = { 0, 20 };
   position lineFourPosition = { 0, 30 };
 
-  display.clearDisplay (); // how can this be avoided?
+//  display.clearDisplay (); // how can this be avoided?
   lcdprint (lineOnePosition, "LR "+String (howMuchLight) );
   lcdprint (lineTwoPosition, "EV "+String(exposureValue) );
   lcdprint (lineThreePosition, "Pot "+String (potValue) );
   lcdprint (lineFourPosition, "SW state "+String (switchesState) );
+  updateDisplay();
 }
