@@ -45,6 +45,7 @@ void testScreenDisplay (int, float, float, int, String, String, String);
 void updateVUMeter (int);
 float evCalibrated (float);
 float getVariableResistorValue ();
+void drawVUMeter (String, String, int, int);
 
 void setup () {
   SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with the Adafruit_GFX et.al. library
@@ -93,6 +94,7 @@ void loop() {
 /* VU meter line proof of concept (0-100%) meter needle movement
 */    
   for (int meter_percent = 0; meter_percent < 101 ; meter_percent++) {
+    drawVUMeter ("f 2.8", "1/250", 400, 0);
     updateVUMeter (meter_percent);
     delay (DELAY_TIME);
     clearDisplay (WHITE);
@@ -241,6 +243,65 @@ void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, i
   lcdprint (aperturePosition, aperture);
   lcdprint (shutterPosition, shutter);
   updateDisplay();
+}
+
+/*********************************
+ * draw VU style meter SIMPLIFIED 
+ *********************************/ 
+void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
+  const byte upperLeftArc = 0x1;
+  const byte upperRightArc = 0x2;
+//  byte lowerRightArc = 0x4;
+//  byte lowerLeftArc = 0x8;
+  const byte scaleArcs = upperLeftArc | upperRightArc;
+  const int scaleRadius = 32; //25
+  const int scaleBaseRadius = 6;
+  const int needleBaseFillWidth = 2;
+  
+  const String minusSign = "-";
+  const String plusSign = "+";
+  
+//  struct coordinate isoValueCoordinate = {0, 0};
+//  struct coordinate changeLableCoordinate = {66, 40};
+  const position fstopCoordinate = {48, 0}; //{54, 10};
+  const position shutterSpeedCoordinate = { 0, 0}; // {48, 0};
+  const position minusSignCoordinate = { 24, 40}; // all the way to the left {16, 40};
+  const position plusSignCoordinate = { 50, 40}; // all the way to the left {42, 40};
+  const position needleBaseCoordinate = { 40, 47}; // to the left most {32, 47};
+ 
+  // display.clearDisplay ();
+  
+// lables
+//   display.setCursor (fstopCoordinate.x, fstopCoordinate.y);
+//   display.println (fstop.substring(0, 5));
+//   display.setCursor (shutterSpeedCoordinate.x, shutterSpeedCoordinate.y);
+//   display.println (shutter);
+
+//   if (changeVariable !=0){
+// //    display.setCursor(changeLableCoordinate.x, changeLableCoordinate.y);
+// //    display.println(changeLable[changeVariable]);
+//   }
+  
+//  display.setCursor(isoValueCoordinate.x, isoValueCoordinate.y);
+//  display.println(String (iso));
+  // display.setCursor (minusSignCoordinate.x, minusSignCoordinate.y);
+  // display.println (minusSign);
+  // display.setCursor (plusSignCoordinate.x, plusSignCoordinate.y);
+  // display.println (plusSign);
+
+  lcdprint (minusSignCoordinate, minusSign);
+  lcdprint (plusSignCoordinate, plusSign);
+
+// draw the centre of the needle  
+  // display.fillCircle (needleBaseCoordinate.x, needleBaseCoordinate.y, needleBaseFillWidth, BLACK);
+  // display.display ();
+
+// draw the meter's scale using circle segments
+  drawCircleHelper (needleBaseCoordinate.x, needleBaseCoordinate.y, scaleBaseRadius, scaleArcs, BLACK);
+  drawCircleHelper (needleBaseCoordinate.x, needleBaseCoordinate.y, scaleRadius, scaleArcs, BLACK);
+
+// draw the scale marks  
+//  scaleMarks (needleBaseCoordinate.x, needleBaseCoordinate.y, numberOfScaleMarks, scaleRadius, markLineLength);
 }
 
 /*********************************************
