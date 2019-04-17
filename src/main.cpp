@@ -1,21 +1,20 @@
 #include <Arduino.h>
 #include <SPI.h>                  // LCD_REFACTORING
 #include "../lib/LCD_Functions.h" // LCD_REFACTORING
+#include "../lib/GFX.h"
 // Note: installed these libraries with platformio library installer
 // LCD_REFACTORING #include <Adafruit_GFX.h>
 // LCD_REFACTORING #include <Adafruit_PCD8544.h>
 
-/* Software SPI (slower updates, more flexible pin options):
+/* wiring of LCD panel to Arduino Uno
  * Arduino pin 13 - Serial clock out (SCLK)
  * Arduino pin 11 - Serial data out (DN)
  * Arduino pin 5 - Data/Command select (D/C)
  * Arduino pin 6 - LCD reset (RST)
  * Arduino pin 7 - LCD chip enable (SCE)
- * Harware SPI not working => Adafruit_PCD8544 display = Adafruit_PCD8544(5, 7 ,6);
  */
-// LCD_REFACTORING Adafruit_PCD8544 display = Adafruit_PCD8544 (13, 11, 5, 7, 6);
 
-/* define hardware pins used
+/* define Arduino hardware pins used
  *
  * Arduino pin  8  -> LH switch (up)
  * Arduino pin  9  -> RH switch (down)
@@ -29,14 +28,9 @@
 #define SOLAR_CELL_INPUT A0
 #define VARIABLE_RESISTOR A1
 
-// define some useful constants
 #define DELAY_TIME 200
 #define LCD_CONTRAST 50
 #define LCD_DEFAULT_BRIGHTNESS 127
-#define LCD_TEXT_SIZE 1
-#define LCD_ROTATION 2
-
-#define numberOfColumns 8;
 
 struct position {
   int x;
@@ -48,23 +42,22 @@ int getLightReading (float, float, float, float);
 int getVariableChoice (unsigned long, int);
 void lcdprint (position, String);
 void testScreenDisplay (int, float, float, int, String, String, String);
+void updateVUMeter (int);
 float evCalibrated (float);
 float getVariableResistorValue ();
 
-void setup() {
+void setup () {
   SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with the Adafruit_GFX et.al. library
   pinMode (UP_SWITCH, INPUT);
   pinMode (DOWN_SWITCH, INPUT);
   pinMode (LCD_BACKLIGHT, OUTPUT);
   Serial.begin(9600);
 
-// LCD_REFACTORING  display.begin(); // initialize display
-  lcdBegin (); // LCD_REFACTORING
+  lcdBegin ();
   analogWrite (LCD_BACKLIGHT, LCD_DEFAULT_BRIGHTNESS);
-/*  display.setContrast (LCD_CONTRAST);
-  display.setTextSize (LCD_TEXT_SIZE);
+/*  display.setContrast (LCD_CONTRAST); // contrast doesn't work that well
+  display.setTextSize (LCD_TEXT_SIZE); // consider re-writing the graphics functions
   display.setRotation (LCD_ROTATION);
-  display.clearDisplay ();
   */
   setContrast (LCD_CONTRAST);
   clearDisplay (WHITE);
@@ -86,18 +79,24 @@ void loop() {
 
   static int lastVariableChoice = 0;
   static unsigned long debounceTimeValue = 0;
-  // static int test =0;
+  static int test_count = 0;
   
+//  clearDisplay (WHITE); // clear every loop either here or in an lcdUpdate function
   lightReading = getLightReading (iso, fstop, shutter, evAdjust);
   ev = evCalibrated ( float (lightReading) ); // later this will be integrated into getLightReading
   variableResistorValue = getVariableResistorValue ();
   variableNumber = getVariableChoice (debounceTimeValue, lastVariableChoice);
   lastVariableChoice = variableNumber;
-  testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber, \
-    isoValue, apertureValue, shutterValue);
+/*  testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber, \
+    isoValue, apertureValue, shutterValue); */
 
-  // to prove a point with "static" Serial.println ("number is "+String(test++));
-  delay (DELAY_TIME);
+/* VU meter line proof of concept (0-100%) meter needle movement
+*/    
+  for (int meter_percent = 0; meter_percent < 101 ; meter_percent++) {
+    updateVUMeter (meter_percent);
+    delay (DELAY_TIME);
+    clearDisplay (WHITE);
+  }
 
 }
 
@@ -119,7 +118,7 @@ int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float 
  * print message to lcd panel at coordinate 
  *********************************************/
 void lcdprint (position coordinate, String message) {
-  unsigned char charNum = 0;
+  unsigned int charNum = 0;
   while (message.charAt(charNum) != 0x00) {
     setChar ( message.charAt (charNum++), coordinate.x+(charNum*6), coordinate.y, BLACK);
   }  
@@ -242,4 +241,23 @@ void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, i
   lcdprint (aperturePosition, aperture);
   lcdprint (shutterPosition, shutter);
   updateDisplay();
+}
+
+/*********************************************
+ * update the VU style meter
+ *********************************************/ 
+void updateVUMeter (int meterValue){
+  const float Pi = 3.1415926;
+  const int needleRadius = 38;
+  const position needleBaseCoordinate = {40, 47};
+  int xTip;
+  int yTip;
+
+  float angle = meterValue*Pi/100.0; // trig functions are in radians!
+
+  xTip = needleBaseCoordinate.x - int(needleRadius*cos(angle));
+  yTip = needleBaseCoordinate.y - int(needleRadius*abs(sin(angle)));
+
+  setLine (needleBaseCoordinate.x, needleBaseCoordinate.y, xTip, yTip, BLACK);
+  updateDisplay ();
 }
