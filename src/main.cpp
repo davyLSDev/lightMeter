@@ -20,22 +20,30 @@
  * Arduino pin  9  -> RH switch (down)
  * Arduino pin  10 -> pwm pin for lcd brightness
  * Arduino pin  A0 -> solar panel
- * Arduino pin  A1 -> pot 
+ * Arduino pin  A1 -> pot
  */
 #define UP_SWITCH 8
 #define DOWN_SWITCH 9
-#define LCD_BACKLIGHT 10 
+#define LCD_BACKLIGHT 10
 #define SOLAR_CELL_INPUT A0
 #define VARIABLE_RESISTOR A1
 
 #define DELAY_TIME 200
 #define LCD_CONTRAST 50
 #define LCD_DEFAULT_BRIGHTNESS 127
+#define numberOfScaleMarks 5
+#define scaleRadius 32
+#define markLineLength 4
 
 struct position {
   int x;
   int y;
 };
+
+// maybe this is one reason for writing all this in c++ to use classes and members
+static position markBottom[numberOfScaleMarks];
+static position markTop[numberOfScaleMarks];
+static const position needleBaseCoordinate = { 40, 47};
 
 // function prototypes
 int getLightReading (float, float, float, float);
@@ -46,12 +54,16 @@ void updateVUMeter (int);
 float evCalibrated (float);
 float getVariableResistorValue ();
 void drawVUMeter (String, String, int, int);
+void getScaleMarkCoordinates (int, int, int , int, int);
+void scaleMarks (int, int, int, int, int);
 
 void setup () {
   SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with the Adafruit_GFX et.al. library
   pinMode (UP_SWITCH, INPUT);
   pinMode (DOWN_SWITCH, INPUT);
   pinMode (LCD_BACKLIGHT, OUTPUT);
+  getScaleMarkCoordinates (needleBaseCoordinate.x, needleBaseCoordinate.y, \
+    scaleRadius, numberOfScaleMarks, markLineLength);
   Serial.begin(9600);
 
   lcdBegin ();
@@ -81,7 +93,7 @@ void loop() {
   static int lastVariableChoice = 0;
   static unsigned long debounceTimeValue = 0;
   static int test_count = 0;
-  
+
 //  clearDisplay (WHITE); // clear every loop either here or in an lcdUpdate function
   lightReading = getLightReading (iso, fstop, shutter, evAdjust);
   ev = evCalibrated ( float (lightReading) ); // later this will be integrated into getLightReading
@@ -254,7 +266,6 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
 //  byte lowerRightArc = 0x4;
 //  byte lowerLeftArc = 0x8;
   const byte scaleArcs = upperLeftArc | upperRightArc;
-  const int scaleRadius = 32; //25
   const int scaleBaseRadius = 6;
   const int needleBaseFillWidth = 2;
 
@@ -267,7 +278,6 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   const position shutterSpeedCoordinate = { 0, 0}; // {48, 0};
   const position minusSignCoordinate = { 24, 40}; // all the way to the left {16, 40};
   const position plusSignCoordinate = { 50, 40}; // all the way to the left {42, 40};
-  const position needleBaseCoordinate = { 40, 47}; // to the left most {32, 47};
 
   // display.clearDisplay ();
 
@@ -301,7 +311,45 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   drawCircleHelper (needleBaseCoordinate.x, needleBaseCoordinate.y, scaleRadius, scaleArcs, BLACK);
 
 // draw the scale marks
-//  scaleMarks (needleBaseCoordinate.x, needleBaseCoordinate.y, numberOfScaleMarks, scaleRadius, markLineLength);
+  scaleMarks (needleBaseCoordinate.x, needleBaseCoordinate.y, numberOfScaleMarks, scaleRadius, markLineLength);
+}
+
+/*********************
+ * calculate the scale mark coordinates
+ *********************/
+void getScaleMarkCoordinates (int xCoordinate, int yCoordinate, int radius, int numberOfMarks, int markLength){
+  int xTop;
+  int yTop;
+  int xBottom;
+  int yBottom;
+  int outsideRadius = radius + markLength;
+  int markNumber=1;
+
+  float Pi = 3.1415926;
+  int angleForEachMark = 180/(1+numberOfMarks);
+  int angleToPlaceMark = 90;
+
+  while (markNumber <= numberOfMarks) {
+    angleToPlaceMark = markNumber*angleForEachMark;
+    float angle = angleToPlaceMark*Pi/180.0; // trig functions are in radians!
+    markTop[markNumber-1].x = xCoordinate - int(outsideRadius*cos(angle));
+    markTop[markNumber-1].y = yCoordinate - int(outsideRadius*abs(sin(angle)));
+    markBottom[markNumber-1].x = xCoordinate - int(radius*cos(angle));
+    markBottom[markNumber-1].y = yCoordinate - int(radius*abs(sin(angle)));
+    markNumber++;
+  }
+}
+
+/************************
+ * draw the scale marks
+ ***********************/
+void scaleMarks (int xCoordinate, int yCoordinate, int numberOfMarks, int radius, int markLength){
+
+  int markNumber=1;
+  while (markNumber <= numberOfMarks) {
+    setLine (markBottom[markNumber-1].x, markBottom[markNumber-1].y, markTop[markNumber-1].x, markTop[markNumber-1].y, BLACK);
+    markNumber++;
+  }
 }
 
 /*********************************************
