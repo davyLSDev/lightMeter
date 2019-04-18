@@ -279,25 +279,13 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   const position minusSignCoordinate = { 24, 40}; // all the way to the left {16, 40};
   const position plusSignCoordinate = { 50, 40}; // all the way to the left {42, 40};
 
-  // display.clearDisplay ();
-
 // lables
-//   display.setCursor (fstopCoordinate.x, fstopCoordinate.y);
-//   display.println (fstop.substring(0, 5));
-//   display.setCursor (shutterSpeedCoordinate.x, shutterSpeedCoordinate.y);
-//   display.println (shutter);
-
+  lcdprint (shutterSpeedCoordinate, shutter);
+  lcdprint (fstopCoordinate, fstop.substring(0, 5));
 //   if (changeVariable !=0){
 // //    display.setCursor(changeLableCoordinate.x, changeLableCoordinate.y);
 // //    display.println(changeLable[changeVariable]);
 //   }
-
-//  display.setCursor(isoValueCoordinate.x, isoValueCoordinate.y);
-//  display.println(String (iso));
-  // display.setCursor (minusSignCoordinate.x, minusSignCoordinate.y);
-  // display.println (minusSign);
-  // display.setCursor (plusSignCoordinate.x, plusSignCoordinate.y);
-  // display.println (plusSign);
 
   lcdprint (minusSignCoordinate, minusSign);
   lcdprint (plusSignCoordinate, plusSign);
