@@ -92,7 +92,7 @@ void loop() {
     isoValue, apertureValue, shutterValue); */
 
 /* VU meter line proof of concept (0-100%) meter needle movement
-*/    
+*/
   for (int meter_percent = 0; meter_percent < 101 ; meter_percent++) {
     drawVUMeter ("f 2.8", "1/250", 400, 0);
     updateVUMeter (meter_percent);
@@ -103,7 +103,7 @@ void loop() {
 }
 
 /*********************************************
- * get the light reading from the solar panel 
+ * get the light reading from the solar panel
  *********************************************/
 int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float evCompensation){
 
@@ -113,19 +113,19 @@ int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float 
   #define MAX_EV 100
   int light = analogRead (SOLAR_CELL_INPUT);
   return light;
-  // later use this: return evCalibrated ( light ); 
+  // later use this: return evCalibrated ( light );
 }
 
 /*********************************************
- * print message to lcd panel at coordinate 
+ * print message to lcd panel at coordinate
  *********************************************/
 void lcdprint (position coordinate, String message) {
   unsigned int charNum = 0;
   while (message.charAt(charNum) != 0x00) {
     setChar ( message.charAt (charNum++), coordinate.x+(charNum*6), coordinate.y, BLACK);
-  }  
+  }
 
-/*  display.setCursor (coordinate.x, coordinate.y); 
+/*  display.setCursor (coordinate.x, coordinate.y);
   display.println (message);
   display.display ();
   */
@@ -135,7 +135,7 @@ void lcdprint (position coordinate, String message) {
  * resistor across the solar cell, using
  * a standard photographic light meter for
  * the EV reading at 100 ASA.
- * 
+ *
  * EV LR (Light reading)
  * 4  45
  * 5  58Begin
@@ -150,9 +150,9 @@ void lcdprint (position coordinate, String message) {
  * 14 457
  * 15 470
  * clearLcdChars (lineOneEraseFromPosition, 1);
- * Entering these numbers into 
+ * Entering these numbers into
  * https://www.easycalculation.com/analytical/least-squares-regression-line-equation.php
- * generated the formula to calculate EV based on 
+ * generated the formula to calculate EV based on
  * the light reading.
  *********************************************/
 float evCalibrated (float lightReading) {
@@ -173,17 +173,17 @@ float getVariableResistorValue () {
  * fetch the variable choice
  ********************************************/
 int getVariableChoice (unsigned long lastTime, int lastChoice){
-/*  0 -> no changes (like the recal screen) 
+/*  0 -> no changes (like the recal screen)
  * 1 -> brightness
  * Does nothing I can notice 2 -> contrast
  * 2 -> ISO
  * 3 -> VU style meter
  * 4 -> bargraph
- * 
+ *
  *      One of the meter screens:
  * 5 -> shutter speed
  * 6 -> aperature
- * 
+ *
  *      Recalibrate screen:
  * 7 -> recalibrate control
  */
@@ -196,7 +196,7 @@ int getVariableChoice (unsigned long lastTime, int lastChoice){
   int numberOfChoices = 8-1; // counting starts at zero
 
   static int lastUpSwitchState = 1;
-  static int lastDownSwitchState = 1;  
+  static int lastDownSwitchState = 1;
 
   if ( (timeNow - lastTime ) >= debounceDelay){
     lastTime = timeNow;
@@ -206,7 +206,7 @@ int getVariableChoice (unsigned long lastTime, int lastChoice){
         lastChoice++;
       }
     }
-    
+
     if ( downSwitchState != lastDownSwitchState ) {
       if ( downSwitchState == 0 ) {
         lastChoice--;
@@ -221,7 +221,7 @@ int getVariableChoice (unsigned long lastTime, int lastChoice){
 }
 
 /*********************************************
- * test screen display with simple data 
+ * test screen display with simple data
  *********************************************/
 void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, int switchesState, \
   String iso, String aperture, String shutter) {
@@ -246,8 +246,8 @@ void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, i
 }
 
 /*********************************
- * draw VU style meter SIMPLIFIED 
- *********************************/ 
+ * draw VU style meter SIMPLIFIED
+ *********************************/
 void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   const byte upperLeftArc = 0x1;
   const byte upperRightArc = 0x2;
@@ -257,10 +257,10 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   const int scaleRadius = 32; //25
   const int scaleBaseRadius = 6;
   const int needleBaseFillWidth = 2;
-  
+
   const String minusSign = "-";
   const String plusSign = "+";
-  
+
 //  struct coordinate isoValueCoordinate = {0, 0};
 //  struct coordinate changeLableCoordinate = {66, 40};
   const position fstopCoordinate = {48, 0}; //{54, 10};
@@ -268,9 +268,9 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   const position minusSignCoordinate = { 24, 40}; // all the way to the left {16, 40};
   const position plusSignCoordinate = { 50, 40}; // all the way to the left {42, 40};
   const position needleBaseCoordinate = { 40, 47}; // to the left most {32, 47};
- 
+
   // display.clearDisplay ();
-  
+
 // lables
 //   display.setCursor (fstopCoordinate.x, fstopCoordinate.y);
 //   display.println (fstop.substring(0, 5));
@@ -281,7 +281,7 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
 // //    display.setCursor(changeLableCoordinate.x, changeLableCoordinate.y);
 // //    display.println(changeLable[changeVariable]);
 //   }
-  
+
 //  display.setCursor(isoValueCoordinate.x, isoValueCoordinate.y);
 //  display.println(String (iso));
   // display.setCursor (minusSignCoordinate.x, minusSignCoordinate.y);
@@ -292,7 +292,7 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   lcdprint (minusSignCoordinate, minusSign);
   lcdprint (plusSignCoordinate, plusSign);
 
-// draw the centre of the needle  
+// draw the centre of the needle
   // display.fillCircle (needleBaseCoordinate.x, needleBaseCoordinate.y, needleBaseFillWidth, BLACK);
   // display.display ();
 
@@ -300,13 +300,13 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   drawCircleHelper (needleBaseCoordinate.x, needleBaseCoordinate.y, scaleBaseRadius, scaleArcs, BLACK);
   drawCircleHelper (needleBaseCoordinate.x, needleBaseCoordinate.y, scaleRadius, scaleArcs, BLACK);
 
-// draw the scale marks  
+// draw the scale marks
 //  scaleMarks (needleBaseCoordinate.x, needleBaseCoordinate.y, numberOfScaleMarks, scaleRadius, markLineLength);
 }
 
 /*********************************************
  * update the VU style meter
- *********************************************/ 
+ *********************************************/
 void updateVUMeter (int meterValue){
   const float Pi = 3.1415926;
   const int needleRadius = 38;
