@@ -35,6 +35,10 @@
 #define numberOfScaleMarks 5
 #define scaleRadius 32
 #define markLineLength 4
+#define vuStyleMeter 0
+#define barStyleMeter 1
+#define selectShutter 0
+#define selectAperture 1
 
 struct position {
   int x;
@@ -57,6 +61,7 @@ float getVariableResistorValue ();
 void drawVUMeter (String, String, int, int);
 void getScaleMarkCoordinates (int, int, int , int, int);
 void scaleMarks (int, int, int, int, int);
+void meterChangeIndicator ( int, int);
 
 void setup () {
   SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with the Adafruit_GFX et.al. library
@@ -280,14 +285,12 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   const position minusSignCoordinate = { 24, 40}; // all the way to the left {16, 40};
   const position plusSignCoordinate = { 50, 40}; // all the way to the left {42, 40};
 
+// indicate selction  {shutter speed / aperture} with underline
+  meterChangeIndicator  ( 0, 1);
+
 // lables
   lcdprint (shutterSpeedCoordinate, shutter);
   lcdprint (fstopCoordinate, fstop.substring(0, 5));
-//   if (changeVariable !=0){
-// //    display.setCursor(changeLableCoordinate.x, changeLableCoordinate.y);
-// //    display.println(changeLable[changeVariable]);
-//   }
-
   lcdprint (minusSignCoordinate, minusSign);
   lcdprint (plusSignCoordinate, plusSign);
 
@@ -337,6 +340,29 @@ void scaleMarks (int xCoordinate, int yCoordinate, int numberOfMarks, int radius
   while (markNumber <= numberOfMarks) {
     setLine (markBottom[markNumber-1].x, markBottom[markNumber-1].y, markTop[markNumber-1].x, markTop[markNumber-1].y, BLACK);
     markNumber++;
+  }
+}
+
+/*********************************************
+ * meter change (value) indicator
+ *********************************************/
+void meterChangeIndicator ( int meterStyle, int changeElement ) {
+  int underscoreLengthShutter = 35;
+  int underscoreLengthFstop = 27;
+  int underscoreLength = underscoreLengthShutter;
+  struct position vuShutter {0, 9};
+  struct position barShutter {0, 15};
+  struct position vuFstop {50, 9};
+	struct position barFstop {0, 15};
+
+  if ( meterStyle == vuStyleMeter )
+  if ( changeElement ) {
+    setLine (vuShutter.x, vuShutter.y, \
+		vuShutter.x+underscoreLength, vuShutter.y, BLACK);
+  }
+  else {
+    setLine (vuFstop.x, vuFstop.y, \
+		vuFstop.x+underscoreLength, vuFstop.y, BLACK);
   }
 }
 
