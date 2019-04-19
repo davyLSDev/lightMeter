@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "../lib/hardware.h"
-#include <SPI.h>                  // LCD_REFACTORING
-#include "../lib/LCD_Functions.h" // LCD_REFACTORING
+#include <SPI.h>
+#include "../lib/LCD_Functions.h"
 #include "../lib/GFX.h"
 // Note: installed these libraries with platformio library installer
 // LCD_REFACTORING #include <Adafruit_GFX.h>
@@ -292,8 +292,7 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   lcdprint (plusSignCoordinate, plusSign);
 
 // draw the centre of the needle
-  // display.fillCircle (needleBaseCoordinate.x, needleBaseCoordinate.y, needleBaseFillWidth, BLACK);
-  // display.display ();
+  fillCircle (needleBaseCoordinate.x, needleBaseCoordinate.y, needleBaseFillWidth, BLACK);
 
 // draw the meter's scale using circle segments
   drawCircleHelper (needleBaseCoordinate.x, needleBaseCoordinate.y, scaleBaseRadius, scaleArcs, BLACK);
