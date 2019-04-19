@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "../lib/hardware.h"
 #include <SPI.h>                  // LCD_REFACTORING
 #include "../lib/LCD_Functions.h" // LCD_REFACTORING
 #include "../lib/GFX.h"
@@ -25,8 +26,8 @@
 #define UP_SWITCH 8
 #define DOWN_SWITCH 9
 #define LCD_BACKLIGHT 10
-#define SOLAR_CELL_INPUT A0
-#define VARIABLE_RESISTOR A1
+// #define SOLAR_CELL_INPUT A0
+// #define VARIABLE_RESISTOR A1
 
 #define DELAY_TIME 200
 #define LCD_CONTRAST 50
@@ -46,7 +47,7 @@ static position markTop[numberOfScaleMarks];
 static const position needleBaseCoordinate = { 40, 47};
 
 // function prototypes
-int getLightReading (float, float, float, float);
+//int getLightReading (float, float, float, float);
 int getVariableChoice (unsigned long, int);
 void lcdprint (position, String);
 void testScreenDisplay (int, float, float, int, String, String, String);
@@ -114,19 +115,19 @@ void loop() {
 
 }
 
-/*********************************************
- * get the light reading from the solar panel
- *********************************************/
-int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float evCompensation){
+// /*********************************************
+//  * get the light reading from the solar panel
+//  *********************************************/
+// int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float evCompensation){
 
-  #define MIN_LIGHT 0
-  #define MAX_LIGHT 360
-  #define MIN_EV 0
-  #define MAX_EV 100
-  int light = analogRead (SOLAR_CELL_INPUT);
-  return light;
-  // later use this: return evCalibrated ( light );
-}
+//   #define MIN_LIGHT 0
+//   #define MAX_LIGHT 360
+//   #define MIN_EV 0
+//   #define MAX_EV 100
+//   int light = analogRead (SOLAR_CELL_INPUT);
+//   return light;
+//   // later use this: return evCalibrated ( light );
+// }
 
 /*********************************************
  * print message to lcd panel at coordinate
@@ -172,14 +173,14 @@ float evCalibrated (float lightReading) {
   return result = 0.023*lightReading + 4.107;
 }
 
-/*********************************************
- * get the variable resistor value
- *********************************************/
-float getVariableResistorValue () {
-  float variable;
-  variable = analogRead (VARIABLE_RESISTOR);
-  return variable;
-}
+// /*********************************************
+//  * get the variable resistor value
+//  *********************************************/
+// float getVariableResistorValue () {
+//   float variable;
+//   variable = analogRead (VARIABLE_RESISTOR);
+//   return variable;
+// }
 
 /*********************************************
  * fetch the variable choice
