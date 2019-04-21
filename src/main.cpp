@@ -106,33 +106,20 @@ void loop() {
   variableResistorValue = getVariableResistorValue ();
   variableNumber = getVariableChoice (debounceTimeValue, lastVariableChoice);
   lastVariableChoice = variableNumber;
-/*  testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber, \
-    isoValue, apertureValue, shutterValue); */
+  testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber, \
+    isoValue, apertureValue, shutterValue);
+  delay (DELAY_TIME);
 
 /* VU meter line proof of concept (0-100%) meter needle movement
 */
-  for (int meter_percent = 0; meter_percent < 101 ; meter_percent++) {
-    drawVUMeter ("f 2.8", "1/250", 400, 0);
-    updateVUMeter (meter_percent);
-    delay (DELAY_TIME);
-    clearDisplay (WHITE);
-  }
+  // for (int meter_percent = 0; meter_percent < 101 ; meter_percent++) {
+  //   drawVUMeter ("f1024", "1/1000", 400, 0);
+  //   updateVUMeter (meter_percent);
+  //   delay (DELAY_TIME);
+  //   clearDisplay (WHITE);
+  // }
 
 }
-
-// /*********************************************
-//  * get the light reading from the solar panel
-//  *********************************************/
-// int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float evCompensation){
-
-//   #define MIN_LIGHT 0
-//   #define MAX_LIGHT 360
-//   #define MIN_EV 0
-//   #define MAX_EV 100
-//   int light = analogRead (SOLAR_CELL_INPUT);
-//   return light;
-//   // later use this: return evCalibrated ( light );
-// }
 
 /*********************************************
  * print message to lcd panel at coordinate
@@ -143,10 +130,6 @@ void lcdprint (position coordinate, String message) {
     setChar ( message.charAt (charNum++), coordinate.x+(charNum*6), coordinate.y, BLACK);
   }
 
-/*  display.setCursor (coordinate.x, coordinate.y);
-  display.println (message);
-  display.display ();
-  */
 }
 /*********************************************
  * Calibrated light reading based on 10k
@@ -280,7 +263,7 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
 
 //  struct coordinate isoValueCoordinate = {0, 0};
 //  struct coordinate changeLableCoordinate = {66, 40};
-  const position fstopCoordinate = {48, 0}; //{54, 10};
+  const position fstopCoordinate = {54, 0}; //{54, 10};
   const position shutterSpeedCoordinate = { 0, 0}; // {48, 0};
   const position minusSignCoordinate = { 24, 40}; // all the way to the left {16, 40};
   const position plusSignCoordinate = { 50, 40}; // all the way to the left {42, 40};
@@ -352,11 +335,11 @@ void meterChangeIndicator ( int meterStyle, int changeElement ) {
   int underscoreLength = underscoreLengthShutter;
   struct position vuShutter {0, 9};
   struct position barShutter {0, 15};
-  struct position vuFstop {50, 9};
+  struct position vuFstop {54, 9};
 	struct position barFstop {0, 15};
 
   if ( meterStyle == vuStyleMeter )
-  if ( changeElement ) {
+  if ( changeElement == selectShutter ) {
     setLine (vuShutter.x, vuShutter.y, \
 		vuShutter.x+underscoreLength, vuShutter.y, BLACK);
   }
