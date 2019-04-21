@@ -132,56 +132,56 @@ void lcdprint (position coordinate, String message) {
 
 }
 
-/*********************************************
- * fetch the variable choice
- ********************************************/
-int getVariableChoice (unsigned long lastTime, int lastChoice){
-/*  0 -> no changes (like the recal screen)
- * 1 -> brightness
- * Does nothing I can notice 2 -> contrast
- * 2 -> ISO
- * 3 -> VU style meter
- * 4 -> bargraph
- *
- *      One of the meter screens:
- * 5 -> shutter speed
- * 6 -> aperature
- *
- *      Recalibrate screen:
- * 7 -> recalibrate control
- */
+// /*********************************************
+//  * fetch the variable choice
+//  ********************************************/
+// int getVariableChoice (unsigned long lastTime, int lastChoice){
+// /*  0 -> no changes (like the recal screen)
+//  * 1 -> brightness
+//  * Does nothing I can notice 2 -> contrast
+//  * 2 -> ISO
+//  * 3 -> VU style meter
+//  * 4 -> bargraph
+//  *
+//  *      One of the meter screens:
+//  * 5 -> shutter speed
+//  * 6 -> aperature
+//  *
+//  *      Recalibrate screen:
+//  * 7 -> recalibrate control
+//  */
 
-  unsigned long timeNow = millis();
-  const unsigned long debounceDelay = 50;
+//   unsigned long timeNow = millis();
+//   const unsigned long debounceDelay = 50;
 
-  int upSwitchState = digitalRead(UP_SWITCH);
-  int downSwitchState = digitalRead(DOWN_SWITCH);
-  int numberOfChoices = 8-1; // counting starts at zero
+//   int upSwitchState = digitalRead(UP_SWITCH);
+//   int downSwitchState = digitalRead(DOWN_SWITCH);
+//   int numberOfChoices = 8-1; // counting starts at zero
 
-  static int lastUpSwitchState = 1;
-  static int lastDownSwitchState = 1;
+//   static int lastUpSwitchState = 1;
+//   static int lastDownSwitchState = 1;
 
-  if ( (timeNow - lastTime ) >= debounceDelay){
-    lastTime = timeNow;
-    if ( upSwitchState != lastUpSwitchState ) {
-      lastUpSwitchState = upSwitchState;
-      if ( upSwitchState == 0 ) {
-        lastChoice++;
-      }
-    }
+//   if ( (timeNow - lastTime ) >= debounceDelay){
+//     lastTime = timeNow;
+//     if ( upSwitchState != lastUpSwitchState ) {
+//       lastUpSwitchState = upSwitchState;
+//       if ( upSwitchState == 0 ) {
+//         lastChoice++;
+//       }
+//     }
 
-    if ( downSwitchState != lastDownSwitchState ) {
-      if ( downSwitchState == 0 ) {
-        lastChoice--;
-      }
-    }
+//     if ( downSwitchState != lastDownSwitchState ) {
+//       if ( downSwitchState == 0 ) {
+//         lastChoice--;
+//       }
+//     }
 
-    if ( lastChoice > numberOfChoices ) lastChoice = 0; // wraparound
-    if ( lastChoice < 0 ) lastChoice = numberOfChoices;
-  }
+//     if ( lastChoice > numberOfChoices ) lastChoice = 0; // wraparound
+//     if ( lastChoice < 0 ) lastChoice = numberOfChoices;
+//   }
 
-  return lastChoice;
-}
+//   return lastChoice;
+// }
 
 /*********************************************
  * test screen display with simple data
