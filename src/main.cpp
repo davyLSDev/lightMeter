@@ -23,9 +23,9 @@
  * Arduino pin  A0 -> solar panel
  * Arduino pin  A1 -> pot
  */
-#define UP_SWITCH 8
-#define DOWN_SWITCH 9
-#define LCD_BACKLIGHT 10
+// #define UP_SWITCH 8
+// #define DOWN_SWITCH 9
+// #define LCD_BACKLIGHT 10
 // #define SOLAR_CELL_INPUT A0
 // #define VARIABLE_RESISTOR A1
 
@@ -65,19 +65,15 @@ void meterChangeIndicator ( int, int);
 
 void setup () {
   SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with the Adafruit_GFX et.al. library
-  pinMode (UP_SWITCH, INPUT);
-  pinMode (DOWN_SWITCH, INPUT);
-  pinMode (LCD_BACKLIGHT, OUTPUT);
+  setupHardware ();
+  // pinMode (LCD_BACKLIGHT, OUTPUT);
   getScaleMarkCoordinates (needleBaseCoordinate.x, needleBaseCoordinate.y, \
     scaleRadius, numberOfScaleMarks, markLineLength);
   Serial.begin(9600);
 
   lcdBegin ();
-  analogWrite (LCD_BACKLIGHT, LCD_DEFAULT_BRIGHTNESS);
-/*  display.setContrast (LCD_CONTRAST); // contrast doesn't work that well
-  display.setTextSize (LCD_TEXT_SIZE); // consider re-writing the graphics functions
-  display.setRotation (LCD_ROTATION);
-  */
+  lcdBrightness (LCD_DEFAULT_BRIGHTNESS);
+
   setContrast (LCD_CONTRAST);
   clearDisplay (WHITE);
   updateDisplay ();
@@ -131,57 +127,6 @@ void lcdprint (position coordinate, String message) {
   }
 
 }
-
-// /*********************************************
-//  * fetch the variable choice
-//  ********************************************/
-// int getVariableChoice (unsigned long lastTime, int lastChoice){
-// /*  0 -> no changes (like the recal screen)
-//  * 1 -> brightness
-//  * Does nothing I can notice 2 -> contrast
-//  * 2 -> ISO
-//  * 3 -> VU style meter
-//  * 4 -> bargraph
-//  *
-//  *      One of the meter screens:
-//  * 5 -> shutter speed
-//  * 6 -> aperature
-//  *
-//  *      Recalibrate screen:
-//  * 7 -> recalibrate control
-//  */
-
-//   unsigned long timeNow = millis();
-//   const unsigned long debounceDelay = 50;
-
-//   int upSwitchState = digitalRead(UP_SWITCH);
-//   int downSwitchState = digitalRead(DOWN_SWITCH);
-//   int numberOfChoices = 8-1; // counting starts at zero
-
-//   static int lastUpSwitchState = 1;
-//   static int lastDownSwitchState = 1;
-
-//   if ( (timeNow - lastTime ) >= debounceDelay){
-//     lastTime = timeNow;
-//     if ( upSwitchState != lastUpSwitchState ) {
-//       lastUpSwitchState = upSwitchState;
-//       if ( upSwitchState == 0 ) {
-//         lastChoice++;
-//       }
-//     }
-
-//     if ( downSwitchState != lastDownSwitchState ) {
-//       if ( downSwitchState == 0 ) {
-//         lastChoice--;
-//       }
-//     }
-
-//     if ( lastChoice > numberOfChoices ) lastChoice = 0; // wraparound
-//     if ( lastChoice < 0 ) lastChoice = numberOfChoices;
-//   }
-
-//   return lastChoice;
-// }
 
 /*********************************************
  * test screen display with simple data

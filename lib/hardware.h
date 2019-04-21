@@ -2,6 +2,22 @@
 #define VARIABLE_RESISTOR A1
 #define UP_SWITCH 8
 #define DOWN_SWITCH 9
+#define LCD_BACKLIGHT 10
+
+void setupHardware (){
+  pinMode (UP_SWITCH, INPUT);
+  pinMode (DOWN_SWITCH, INPUT);
+  pinMode (LCD_BACKLIGHT, OUTPUT);
+}
+
+void lcdBrightness (int brightness){
+  analogWrite (LCD_BACKLIGHT, brightness);
+}
+
+/*  display.setContrast (LCD_CONTRAST); // contrast doesn't work that well
+  display.setTextSize (LCD_TEXT_SIZE); // consider re-writing the graphics functions
+  display.setRotation (LCD_ROTATION);
+  */
 
 /*********************************************
  * get the light reading from the solar panel
