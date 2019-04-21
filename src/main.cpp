@@ -23,11 +23,6 @@
  * Arduino pin  A0 -> solar panel
  * Arduino pin  A1 -> pot
  */
-// #define UP_SWITCH 8
-// #define DOWN_SWITCH 9
-// #define LCD_BACKLIGHT 10
-// #define SOLAR_CELL_INPUT A0
-// #define VARIABLE_RESISTOR A1
 
 #define DELAY_TIME 200
 #define LCD_CONTRAST 50
@@ -168,8 +163,6 @@ void drawVUMeter (String fstop, String shutter, int iso, int changeVariable){
   const String minusSign = "-";
   const String plusSign = "+";
 
-//  struct coordinate isoValueCoordinate = {0, 0};
-//  struct coordinate changeLableCoordinate = {66, 40};
   const position fstopCoordinate = {54, 0}; //{54, 10};
   const position shutterSpeedCoordinate = { 0, 0}; // {48, 0};
   const position minusSignCoordinate = { 24, 40}; // all the way to the left {16, 40};
