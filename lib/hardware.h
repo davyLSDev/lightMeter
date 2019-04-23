@@ -1,23 +1,36 @@
+/* define Arduino hardware pins used
+ *
+ * Arduino pin  8  -> LH switch (up)
+ * Arduino pin  9  -> RH switch (down)
+ * Arduino pin  10 -> pwm pin for lcd brightness
+ * Arduino pin  A0 -> solar panel
+ * Arduino pin  A1 -> pot
+ */
 #define SOLAR_CELL_INPUT A0
 #define VARIABLE_RESISTOR A1
 #define UP_SWITCH 8
 #define DOWN_SWITCH 9
 #define LCD_BACKLIGHT 10
 
+/*********************************************
+ * set the lcd backlight brightness
+ *********************************************/
 void setupHardware (){
   pinMode (UP_SWITCH, INPUT);
   pinMode (DOWN_SWITCH, INPUT);
   pinMode (LCD_BACKLIGHT, OUTPUT);
 }
 
-void lcdBrightness (int brightness){
-  analogWrite (LCD_BACKLIGHT, brightness);
-}
-
+/*********************************************
+ * set the lcd backlight brightness
+ *********************************************/
 /*  display.setContrast (LCD_CONTRAST); // contrast doesn't work that well
   display.setTextSize (LCD_TEXT_SIZE); // consider re-writing the graphics functions
   display.setRotation (LCD_ROTATION);
   */
+void lcdBrightness (int brightness){
+  analogWrite (LCD_BACKLIGHT, brightness);
+}
 
 /*********************************************
  * get the light reading from the solar panel

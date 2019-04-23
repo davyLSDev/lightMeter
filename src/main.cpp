@@ -3,6 +3,7 @@
 #include <SPI.h>
 #include "../lib/LCD_Functions.h"
 #include "../lib/GFX.h"
+#include "../lib/settings/settings.h"
 // Note: installed these libraries with platformio library installer
 // LCD_REFACTORING #include <Adafruit_GFX.h>
 // LCD_REFACTORING #include <Adafruit_PCD8544.h>
@@ -13,15 +14,6 @@
  * Arduino pin 5 - Data/Command select (D/C)
  * Arduino pin 6 - LCD reset (RST)
  * Arduino pin 7 - LCD chip enable (SCE)
- */
-
-/* define Arduino hardware pins used
- *
- * Arduino pin  8  -> LH switch (up)
- * Arduino pin  9  -> RH switch (down)
- * Arduino pin  10 -> pwm pin for lcd brightness
- * Arduino pin  A0 -> solar panel
- * Arduino pin  A1 -> pot
  */
 
 #define DELAY_TIME 200
@@ -58,6 +50,8 @@ void getScaleMarkCoordinates (int, int, int , int, int);
 void scaleMarks (int, int, int, int, int);
 void meterChangeIndicator ( int, int);
 
+settings meterSettings;
+
 void setup () {
   SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with the Adafruit_GFX et.al. library
   setupHardware ();
@@ -72,6 +66,7 @@ void setup () {
   setContrast (LCD_CONTRAST);
   clearDisplay (WHITE);
   updateDisplay ();
+
 }
 
 void loop() {
@@ -110,6 +105,12 @@ void loop() {
   //   clearDisplay (WHITE);
   // }
 
+// float test = meterSettings.getIso();
+  Serial.println ( String (meterSettings.getIso() ) );
+  delay (DELAY_TIME);
+  meterSettings.setIso(3200.0);
+  Serial.println ( String (meterSettings.getIso() ) );
+  delay (DELAY_TIME);
 }
 
 /*********************************************
