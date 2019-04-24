@@ -106,10 +106,12 @@ void loop() {
   // }
 
 // float test = meterSettings.getIso();
-  Serial.println ( String (meterSettings.getIso() ) );
-  delay (DELAY_TIME);
-  meterSettings.setIso(3200.0);
-  Serial.println ( String (meterSettings.getIso() ) );
+  Serial.println( "Aperture is "+String (meterSettings.getAperture () ) );
+  Serial.println( "Shutter is "+meterSettings.getShutter () );
+  Serial.println ( "ISO is "+String (meterSettings.getIso () ) );
+  // delay (DELAY_TIME);
+  // meterSettings.setIso(3200.0);
+  // Serial.println ( String (meterSettings.getIso() ) );
   delay (DELAY_TIME);
 }
 

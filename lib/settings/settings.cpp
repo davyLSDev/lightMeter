@@ -3,15 +3,27 @@ using namespace std;
 
 settings::settings()
 {
-    float iso = 0.0;
+    apertureIDX = 8;    // 16.0
+    isoIDX = 8;         //8 100.0
+    shutterIDX = 3;     //3 "1/125"
 }
 
-void settings::setIso (float isoValue)
+void settings::setIso (double isoValue)
 {
     iso = isoValue;
 }
 
-float settings::getIso ()
+double settings::getAperture ()
 {
-    return iso;
+    return aperture = apertureTable[apertureIDX];
+}
+
+double settings::getIso ()
+{
+    return iso = isoTable[isoIDX];
+}
+
+String settings::getShutter ()
+{
+    return shutter = shutterTable[shutterIDX];
 }
