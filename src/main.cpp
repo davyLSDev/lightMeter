@@ -78,9 +78,12 @@ void loop() {
   float variableResistorValue;
   int lightReading;
   int variableNumber = 0;
-  String isoValue = "I:3200";
-  String apertureValue = "f 1024";
-  String shutterValue = "1/1000";
+  // String isoValue = "I:3200";
+  // String apertureValue = "f 1024";
+  // String shutterValue = "1/1000";
+  String isoValue = String (meterSettings.getIso () );
+  String apertureValue = String (meterSettings.getAperture () );
+  String shutterValue = meterSettings.getShutter ();
 
   static int lastVariableChoice = 0;
   static unsigned long debounceTimeValue = 0;
@@ -106,9 +109,9 @@ void loop() {
   // }
 
 // float test = meterSettings.getIso();
-  Serial.println( "Aperture is "+String (meterSettings.getAperture () ) );
-  Serial.println( "Shutter is "+meterSettings.getShutter () );
-  Serial.println ( "ISO is "+String (meterSettings.getIso () ) );
+  // Serial.println( "Aperture is "+String (meterSettings.getAperture () ) );
+  // Serial.println( "Shutter is "+meterSettings.getShutter () );
+  // Serial.println ( "ISO is "+String (meterSettings.getIso () ) );
   // delay (DELAY_TIME);
   // meterSettings.setIso(3200.0);
   // Serial.println ( String (meterSettings.getIso() ) );
