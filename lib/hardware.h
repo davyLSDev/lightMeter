@@ -35,7 +35,8 @@ void lcdBrightness (int brightness){
 /*********************************************
  * get the light reading from the solar panel
  *********************************************/
-int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float evCompensation){
+//int getLightReading (float filmSpeed, float aperture, float shutterSpeed, float evCompensation){
+int getLightReading (double evCompensation){
 
   #define MIN_LIGHT 0
   #define MAX_LIGHT 360

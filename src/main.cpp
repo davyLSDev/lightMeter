@@ -70,17 +70,15 @@ void setup () {
 }
 
 void loop() {
-  float iso = 100;
-  float fstop = 16;
-  float shutter = 1/100;
-  float evAdjust = 0.0;
+  // float iso = 100;
+  // float fstop = 16;
+  // float shutter = 1/100;
+  double evAdjust = 0.0;
   float ev;
   float variableResistorValue;
   int lightReading;
   int variableNumber = 0;
-  // String isoValue = "I:3200";
-  // String apertureValue = "f 1024";
-  // String shutterValue = "1/1000";
+
   String isoValue = String (meterSettings.getIso () );
   String apertureValue = String (meterSettings.getAperture () );
   String shutterValue = meterSettings.getShutter ();
@@ -89,8 +87,8 @@ void loop() {
   static unsigned long debounceTimeValue = 0;
   static int test_count = 0;
 
-//  clearDisplay (WHITE); // clear every loop either here or in an lcdUpdate function
-  lightReading = getLightReading (iso, fstop, shutter, evAdjust);
+//  lightReading = getLightReading (isoValue, apertureValue, shutterValue, evAdjust);
+  lightReading = getLightReading (evAdjust);
   ev = evCalibrated ( float (lightReading) ); // later this will be integrated into getLightReading
   variableResistorValue = getVariableResistorValue ();
   variableNumber = getVariableChoice (debounceTimeValue, lastVariableChoice);
@@ -143,7 +141,6 @@ void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, i
   position aperturePosition = { 0, 40 };
   position shutterPosition = { 48, 40 };
 
-//  display.clearDisplay (); // how can this be avoided?
   lcdprint (lineOnePosition, "LR "+String (howMuchLight) );
   lcdprint (lineTwoPosition, "EV "+String(exposureValue) );
   lcdprint (lineThreePosition, "Pot "+String (potValue) );
