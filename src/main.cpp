@@ -53,12 +53,14 @@ void meterChangeIndicator ( int, int);
 settings meterSettings;
 
 void setup () {
+
   SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with the Adafruit_GFX et.al. library
   setupHardware ();
   // pinMode (LCD_BACKLIGHT, OUTPUT);
   getScaleMarkCoordinates (needleBaseCoordinate.x, needleBaseCoordinate.y, \
     scaleRadius, numberOfScaleMarks, markLineLength);
   Serial.begin(9600);
+  meterSettings.setup (getVariableResistorValue () );
 
   lcdBegin ();
   lcdBrightness (LCD_DEFAULT_BRIGHTNESS);
@@ -76,8 +78,17 @@ void loop() {
   double evAdjust = 0.0;
   float ev;
   float variableResistorValue;
+  float test;
   int lightReading;
   int variableNumber = 0;
+
+  // test setup of settings
+  Serial.println("   ");
+  Serial.println (String (getVariableResistorValue ()) );
+  for (int i=0; i<3; i++){
+    Serial.println (String (test = meterSettings.getLastSetting (i)) );
+  }
+  Serial.println("   ");
 
   String isoValue = String (meterSettings.getIso () );
   String apertureValue = String (meterSettings.getAperture () );

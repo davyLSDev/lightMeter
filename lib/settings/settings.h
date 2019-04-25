@@ -2,7 +2,9 @@
 
 class settings {
     public:
-        settings();
+        settings ();
+        void setup (float);
+        float getLastSetting (int);
         void setAperture (double apertureValue);
         int setDeltaAperture (int deltaAperture);
         double getAperture ();
@@ -14,11 +16,19 @@ class settings {
         String getShutter ();
     private:
         int apertureIDX;
+        int apertureDeltaIDX;
         int isoIDX;
+        int isoDeltaIDX;
         int shutterIDX;
+        int shutterDeltaIDX;
         float aperture;
         float iso;
         String shutter;
+        int numberOfSettings;
+        float settingValue[3];
+        float lastSettingValue[3];
+        float settingMaxValue[3];
+        float settingMinValue[3];
         const double apertureTable[22] = {1.0,1.4, \
             2.0,2.8, \
             4.0,5.6, \
