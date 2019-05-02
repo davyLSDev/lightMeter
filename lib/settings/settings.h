@@ -4,6 +4,7 @@ class settings {
     public:
         settings ();
         void setup (int);
+        int getDeltaSetting (int, int );
         int getSetting (int, int);
         int getLastSetting (int);
         void setAperture (double apertureValue);

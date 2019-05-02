@@ -32,6 +32,15 @@ void settings::setup (int potentiometerReading)
     shutterDeltaIDX = 0;
 }
 
+int settings::getDeltaSetting (int settingNumber, int potReading)
+{
+    int currentSetting = this->getSetting (settingNumber, potReading);
+    int lastSetting = this->getLastSetting (settingNumber);
+    int deltaSetting = currentSetting-lastSetting;
+    // change the last setting, if ( deltaSetting !=0 ){}
+    return deltaSetting;
+}
+
 int settings::getSetting (int settingNumber, int potReading)
 {
     return settingValue[settingNumber] = map ( potReading, \

@@ -89,6 +89,7 @@ void loop() {
   for (int i=0; i<3; i++){
     Serial.println (String (test = meterSettings.getSetting (i , variableResistorValue) ) );
     Serial.println (String (test = meterSettings.getLastSetting (i)) );
+    Serial.println ("Delta setting "+String (test = meterSettings.getDeltaSetting (i, variableResistorValue) )  );
   }
   Serial.println("   ");
 
