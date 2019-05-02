@@ -56,7 +56,7 @@ void setup () {
 
   SPI.setClockDivider(SPI_CLOCK_DIV16); // doesn't work with the Adafruit_GFX et.al. library
   setupHardware ();
-  // pinMode (LCD_BACKLIGHT, OUTPUT);
+
   getScaleMarkCoordinates (needleBaseCoordinate.x, needleBaseCoordinate.y, \
     scaleRadius, numberOfScaleMarks, markLineLength);
   Serial.begin(9600);

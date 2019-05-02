@@ -37,7 +37,11 @@ int settings::getDeltaSetting (int settingNumber, int potReading)
     int currentSetting = this->getSetting (settingNumber, potReading);
     int lastSetting = this->getLastSetting (settingNumber);
     int deltaSetting = currentSetting-lastSetting;
-    // change the last setting, if ( deltaSetting !=0 ){}
+    if ( deltaSetting !=0 )
+    {
+        lastSettingValue[settingNumber] = currentSetting;
+        settingIDX[settingNumber] = lastSetting + deltaSetting;
+    }
     return deltaSetting;
 }
 
@@ -60,7 +64,8 @@ void settings::setIso (double isoValue)
 
 double settings::getAperture ()
 {
-    return aperture = apertureTable[apertureIDX];
+    // return aperture = apertureTable[apertureIDX];
+    return aperture = apertureTable[settingIDX[0]];
 }
 
 double settings::getIso ()

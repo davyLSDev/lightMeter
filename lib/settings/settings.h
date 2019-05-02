@@ -44,6 +44,7 @@ class settings {
 // / number of values +2 aperture, shutter, iso
         int settingMaxValue[3] = {22+2, 14+2, 26+2};
         int settingMinValue[3] = {0, 0, 0};
+        int settingIDX[3];
         const double apertureTable[22] = {1.0,1.4, \
             2.0,2.8, \
             4.0,5.6, \
