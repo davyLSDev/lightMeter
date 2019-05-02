@@ -4,9 +4,6 @@ using namespace std;
 settings::settings()
 {
     // Defaults . . .
-    apertureDeltaIDX = 0;
-    isoDeltaIDX = 0;
-    shutterDeltaIDX = 0;
     aperture = 16;
     iso = 100.0;
     shutter = "1/125";
@@ -20,12 +17,10 @@ void settings::setup (int potentiometerReading)
     {
         settingValue[i] = lastSettingValue[i] = map ( potentiometerReading, \
         minPotValue, maxPotValue, \
-        settingMinValue[i], settingMaxValue[i] );
-        // lastSettingValue[i] = 300.0 ; // potentiometerReading;
-        // settingValue[i] = potentiometerReading;
+        settingMinValue[i], settingMaxValue[i]+settingPadding );
     }
     apertureIDX = 0;
-    isoDeltaIDX = 1;
+    isoIDX = 1;
     shutterIDX = 2;
 }
 
@@ -38,6 +33,15 @@ int settings::getDeltaSetting (int settingNumber, int potReading)
     {
         lastSettingValue[settingNumber] = currentSetting;
         settingIDX[settingNumber] = lastSetting + deltaSetting;
+// Don't let array indices go out of bounds!
+        if ( settingIDX[settingNumber] > settingMaxValue[settingNumber] )
+        {
+            settingIDX[settingNumber] = settingMaxValue[settingNumber];
+        }
+        if ( settingIDX[settingNumber] < settingMinValue[settingNumber] )
+        {
+            settingIDX[settingNumber] = settingMinValue[settingNumber];
+        }
     }
     return deltaSetting;
 }

@@ -30,11 +30,8 @@ class settings {
         const int minPotValue = 0;
         const int maxPotValue = 1023;
         int apertureIDX;
-        int apertureDeltaIDX;
         int isoIDX;
-        int isoDeltaIDX;
         int shutterIDX;
-        int shutterDeltaIDX;
         float aperture;
         float iso;
         String shutter;
@@ -42,7 +39,8 @@ class settings {
         int settingValue[3];
         int lastSettingValue[3];
 // / number of values +2 aperture, shutter, iso
-        int settingMaxValue[3] = {22+2, 14+2, 26+2};
+        int settingPadding = 2;
+        int settingMaxValue[3] = {22, 14, 26};
         int settingMinValue[3] = {0, 0, 0};
         int settingIDX[3];
         const double apertureTable[22] = {1.0,1.4, \
