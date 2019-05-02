@@ -4,9 +4,6 @@
 #include "../lib/LCD_Functions.h"
 #include "../lib/GFX.h"
 #include "../lib/settings/settings.h"
-// Note: installed these libraries with platformio library installer
-// LCD_REFACTORING #include <Adafruit_GFX.h>
-// LCD_REFACTORING #include <Adafruit_PCD8544.h>
 
 /* wiring of LCD panel to Arduino Uno
  * Arduino pin 13 - Serial clock out (SCLK)
@@ -38,7 +35,6 @@ static position markTop[numberOfScaleMarks];
 static const position needleBaseCoordinate = { 40, 47};
 
 // function prototypes
-//int getLightReading (float, float, float, float);
 int getVariableChoice (unsigned long, int);
 void lcdprint (position, String);
 void testScreenDisplay (int, float, int, int, String, String, String);
@@ -72,9 +68,7 @@ void setup () {
 }
 
 void loop() {
-  // float iso = 100;
-  // float fstop = 16;
-  // float shutter = 1/100;
+
   double evAdjust = 0.0;
   float ev;
   int variableResistorValue;
