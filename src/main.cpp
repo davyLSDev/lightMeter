@@ -107,9 +107,12 @@ void loop() {
   // variableResistorValue = getVariableResistorValue ();
   variableNumber = getVariableChoice (debounceTimeValue, lastVariableChoice);
   lastVariableChoice = variableNumber;
-  testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber, \
-    isoValue, apertureValue, shutterValue);
-  delay (DELAY_TIME);
+  // testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber, \
+  //   isoValue, apertureValue, shutterValue);
+  drawVUMeter ( String(meterSettings.getAperture () ), meterSettings.getShutter (),\
+    meterSettings.getIso (), variableNumber);
+  updateVUMeter (lightReading);
+//  delay (DELAY_TIME);
 
 /* VU meter line proof of concept (0-100%) meter needle movement
 */
@@ -128,6 +131,7 @@ void loop() {
   // meterSettings.setIso(3200.0);
   // Serial.println ( String (meterSettings.getIso() ) );
   delay (DELAY_TIME);
+  clearDisplay (WHITE);
 }
 
 /*********************************************

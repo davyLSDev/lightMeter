@@ -110,7 +110,8 @@ int getVariableChoice (unsigned long lastTime, int lastChoice){
 
   int upSwitchState = digitalRead(UP_SWITCH);
   int downSwitchState = digitalRead(DOWN_SWITCH);
-  int numberOfChoices = 8-1; // counting starts at zero
+  // int numberOfChoices = 8-1; // counting starts at zero
+  int numberOfChoices = 8-1; // right now only three options: aperture, iso, shutter
 
   static int lastUpSwitchState = 1;
   static int lastDownSwitchState = 1;
