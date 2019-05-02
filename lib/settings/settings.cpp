@@ -4,11 +4,8 @@ using namespace std;
 settings::settings()
 {
     // Defaults . . .
-    apertureIDX = 8;
     apertureDeltaIDX = 0;
-    isoIDX = 8;
     isoDeltaIDX = 0;
-    shutterIDX = 3;
     shutterDeltaIDX = 0;
     aperture = 16;
     iso = 100.0;
@@ -27,9 +24,9 @@ void settings::setup (int potentiometerReading)
         // lastSettingValue[i] = 300.0 ; // potentiometerReading;
         // settingValue[i] = potentiometerReading;
     }
-    apertureDeltaIDX = 0;
-    isoDeltaIDX = 0;
-    shutterDeltaIDX = 0;
+    apertureIDX = 0;
+    isoDeltaIDX = 1;
+    shutterIDX = 2;
 }
 
 int settings::getDeltaSetting (int settingNumber, int potReading)
@@ -64,16 +61,15 @@ void settings::setIso (double isoValue)
 
 double settings::getAperture ()
 {
-    // return aperture = apertureTable[apertureIDX];
-    return aperture = apertureTable[settingIDX[0]];
+    return aperture = apertureTable[settingIDX[apertureIDX]];
 }
 
 double settings::getIso ()
 {
-    return iso = isoTable[isoIDX];
+    return iso = isoTable[settingIDX[isoIDX]];
 }
 
 String settings::getShutter ()
 {
-    return shutter = shutterTable[shutterIDX];
+    return shutter = shutterTable[settingIDX[shutterIDX]];
 }
