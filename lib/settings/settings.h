@@ -3,8 +3,9 @@
 class settings {
     public:
         settings ();
-        void setup (float);
-        float getLastSetting (int);
+        void setup (int);
+        int getSetting (int, int);
+        int getLastSetting (int);
         void setAperture (double apertureValue);
         int setDeltaAperture (int deltaAperture);
         double getAperture ();
@@ -15,6 +16,18 @@ class settings {
         int setDeltaShutter (int deltaShutter);
         String getShutter ();
     private:
+        const int minBrightness = 0;
+        const int maxBrightness = 255;
+        const int minIsoIDX = 0;
+        const int maxIsoIDX = 13;
+        const int minMeterStyle = 0;
+        const int maxMeterStyle = 1;
+        const int minShutterSpeedIDX = 0;
+        const int maxShutterSpeedIDX = 22;
+        const int minApertureIDX = 0;
+        const int maxApertureIDX = 18;
+        const int minPotValue = 0;
+        const int maxPotValue = 1023;
         int apertureIDX;
         int apertureDeltaIDX;
         int isoIDX;
@@ -25,10 +38,11 @@ class settings {
         float iso;
         String shutter;
         int numberOfSettings;
-        float settingValue[3];
-        float lastSettingValue[3];
-        float settingMaxValue[3];
-        float settingMinValue[3];
+        int settingValue[3];
+        int lastSettingValue[3];
+// / number of values +2 aperture, shutter, iso
+        int settingMaxValue[3] = {22+2, 14+2, 26+2};
+        int settingMinValue[3] = {0, 0, 0};
         const double apertureTable[22] = {1.0,1.4, \
             2.0,2.8, \
             4.0,5.6, \

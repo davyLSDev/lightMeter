@@ -15,22 +15,31 @@ settings::settings()
     shutter = "1/125";
     numberOfSettings = 3; // aperture, iso, shutter
     // later add: display brightness, choice of meter style
-//    getInitialVariableValues();
 }
 
-void settings::setup (float potentiometerReading)
+void settings::setup (int potentiometerReading)
 {
     for ( int i = 0; i < numberOfSettings; i++ )
     {
-        lastSettingValue[i] = 300.0 ; // potentiometerReading;
-        settingValue[i] = potentiometerReading;
+        settingValue[i] = lastSettingValue[i] = map ( potentiometerReading, \
+        minPotValue, maxPotValue, \
+        settingMinValue[i], settingMaxValue[i] );
+        // lastSettingValue[i] = 300.0 ; // potentiometerReading;
+        // settingValue[i] = potentiometerReading;
     }
     apertureDeltaIDX = 0;
     isoDeltaIDX = 0;
     shutterDeltaIDX = 0;
 }
 
-float settings::getLastSetting (int settingNumber)
+int settings::getSetting (int settingNumber, int potReading)
+{
+    return settingValue[settingNumber] = map ( potReading, \
+        minPotValue, maxPotValue, \
+        settingMinValue[settingNumber], settingMaxValue[settingNumber] );
+}
+
+int settings::getLastSetting (int settingNumber)
 {
     return lastSettingValue[settingNumber];
 }

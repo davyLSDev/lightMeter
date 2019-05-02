@@ -41,10 +41,10 @@ static const position needleBaseCoordinate = { 40, 47};
 //int getLightReading (float, float, float, float);
 int getVariableChoice (unsigned long, int);
 void lcdprint (position, String);
-void testScreenDisplay (int, float, float, int, String, String, String);
+void testScreenDisplay (int, float, int, int, String, String, String);
 void updateVUMeter (int);
 float evCalibrated (float);
-float getVariableResistorValue ();
+int getVariableResistorValue ();
 void drawVUMeter (String, String, int, int);
 void getScaleMarkCoordinates (int, int, int , int, int);
 void scaleMarks (int, int, int, int, int);
@@ -77,15 +77,17 @@ void loop() {
   // float shutter = 1/100;
   double evAdjust = 0.0;
   float ev;
-  float variableResistorValue;
+  int variableResistorValue;
   float test;
   int lightReading;
   int variableNumber = 0;
 
+  variableResistorValue = getVariableResistorValue ();
   // test setup of settings
   Serial.println("   ");
-  Serial.println (String (getVariableResistorValue ()) );
+  Serial.println (String (variableResistorValue) );
   for (int i=0; i<3; i++){
+    Serial.println (String (test = meterSettings.getSetting (i , variableResistorValue) ) );
     Serial.println (String (test = meterSettings.getLastSetting (i)) );
   }
   Serial.println("   ");
@@ -101,7 +103,7 @@ void loop() {
 //  lightReading = getLightReading (isoValue, apertureValue, shutterValue, evAdjust);
   lightReading = getLightReading (evAdjust);
   ev = evCalibrated ( float (lightReading) ); // later this will be integrated into getLightReading
-  variableResistorValue = getVariableResistorValue ();
+  // variableResistorValue = getVariableResistorValue ();
   variableNumber = getVariableChoice (debounceTimeValue, lastVariableChoice);
   lastVariableChoice = variableNumber;
   testScreenDisplay (lightReading, ev, variableResistorValue, variableNumber, \
@@ -141,7 +143,7 @@ void lcdprint (position coordinate, String message) {
 /*********************************************
  * test screen display with simple data
  *********************************************/
-void testScreenDisplay (int howMuchLight, float exposureValue, float potValue, int switchesState, \
+void testScreenDisplay (int howMuchLight, float exposureValue, int potValue, int switchesState, \
   String iso, String aperture, String shutter) {
 
   position lineOnePosition = { 0, 0 };

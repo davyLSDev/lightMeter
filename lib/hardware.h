@@ -80,8 +80,8 @@ float evCalibrated (float lightReading) {
 /*********************************************
  * get the variable resistor value
  *********************************************/
-float getVariableResistorValue () {
-  float variable;
+int getVariableResistorValue () {
+  int variable;
   variable = analogRead (VARIABLE_RESISTOR);
   return variable;
 }
